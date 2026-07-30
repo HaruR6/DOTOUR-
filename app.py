@@ -109,7 +109,7 @@ budget = int(
         "割引後の合計金額の上限",
         min_value=0,
         max_value=100000,
-        value=1500,
+        value=1000,
         step=10,
         format="%d",
     )
