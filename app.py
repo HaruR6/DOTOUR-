@@ -39,5 +39,38 @@ budget = st.number_input(
 )
 
 if st.button("商品を抽選する"):
-    # ここでpick_productsを実行
-    pass
+    
+    try:
+        if not selected_genres:
+            st.warning("ジャンルを1つ以上選択してください。")
+        elif sum(genre_counts.values()) == 0:
+            st.warning("商品の個数を1個以上にしてください。")
+        else:
+            with st.spinner("商品を選んでいます…"):
+                result = pick_products(
+                    products=products,
+                    genre_counts=genre_counts,
+                    budget=int(budget),
+                    rng=random.Random(),
+                )
+
+            st.success("抽選しました")
+
+            for product in result:
+                size = f"（{product.size}）" if product.size != "—" else ""
+                st.write(
+                    f"**{product.name}{size}**　"
+                    f"{product.price:,}円"
+                )
+
+            normal_total = sum(product.price for product in result)
+            payment = payable_total(result)
+            discount = normal_total - payment
+
+            st.divider()
+            st.write(f"通常合計：{normal_total:,}円")
+            st.write(f"割引：-{discount:,}円")
+            st.write(f"支払額：**{payment:,}円**")
+
+    except Exception as error:
+        st.error(f"エラーが発生しました：{error}")
